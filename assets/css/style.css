@@ -3,3 +3,9 @@
     height:100px;
     border: 1px solid red
 }
+.cardImage {
+    display: block;
+    /*
+    margin-top: 5px;
+    */
+}
