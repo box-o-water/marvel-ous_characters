@@ -20,7 +20,6 @@ $(document).ready(function(){
     $(document).on("click", "#btnBack", function() {
         $("#tabSearch").css("display", "");
         $("#tabMovie").css("display", "none");
-
     });
 });
 
@@ -34,7 +33,6 @@ function searchMovie(APIKey, txtMovie) {
         .then(function (data) {
             console.log(data.title_results);
             getImages(APIGIPHY, data.title_results);
-
         })
         .catch(function(error) {
             console.log(error);
@@ -54,25 +52,56 @@ function getImages(APIKey, txtTitle) {
         .then(function (data) {
             console.log(data);
             var txtCards = "";
-            for (var i = 0;i < data.data.length; i++) {
+            var numOFImage = data.data.length;
+            if (numOFImage > 5) numOFImage == 5;
+            $("#cards").html("");
+            for (var i = 0; i < numOFImage; i++) {
                 var id = data.data[i].id;
-                txtCards += addCard(id, (data.data[i].slug.replace("-"+id, "")).replaceAll("-"," "));
+                txtTitle = data.data[i].title.substring(0, data.data[i].title.indexOf(" " + data.data[i].type.toUpperCase())).replaceAll(" ","%20");
+                addCard(id, txtTitle);
             }
-            $("#cards").html(txtCards);
-            $(".cardImage").each(function(index) {
-                this.onload = function() {
-                    adjustImage($(this));
-                }
-                $(this).click(function() {
-                    console.log($(this).attr("data-title"));
-                    searchMovie(APIKeyWatchmode, $(this).attr("data-title"));
-                });
-            });
         })
         .catch(function(error) {
             console.log(error);
         });
 }
+
+function addCard(image_id, txtTitle) {
+    const newDiv = document.createElement("div");
+    const newImg = document.createElement("img");
+
+    newDiv.classList.add("cardMovie");
+    newImg.src = `https://i.giphy.com/media/${image_id}/giphy.webp`;
+    newImg.classList.add("cardImage");
+    newImg.setAttribute("data-title", txtTitle);
+    newDiv.appendChild(newImg);
+    document.getElementById("cards").appendChild(newImg);
+    newImg.style.visibility = "hidden";
+    newImg.onload = function() {
+        adjustImage($(this));
+        newImg.style.visibility = "visible";
+    }
+    newImg.addEventListener("click", function() {
+        console.log($(this).attr("data-title"));
+        searchMovie(APIKeyWatchmode, $(this).attr("data-title"));
+    });
+}
+
+function searchMovieDetail(APIKey, title_id) {
+    var URL = `https://api.watchmode.com/v1/title/${title_id}/details/?apiKey=${APIKey}&append_to_response=sources`;
+
+    fetch(URL)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+}
+
 function adjustImage(obj) {
     var maxWidth = 100;
     var maxHeight = 100;
@@ -98,22 +127,4 @@ function adjustImage(obj) {
 
     obj.css("margin-left", Math.floor((maxWidth - width) / 2));
     obj.css("margin-top", Math.floor((maxHeight - height) / 2));
-}
-
-function addCard(image_id, txtTitle) {
-    return `<div class="cardMovie"><img src="https://i.giphy.com/media/${image_id}/giphy.webp" class="cardImage" data-title="${txtTitle}" /></div>`;
-}
-function searchMovieDetail(APIKey, title_id) {
-    var URL = `https://api.watchmode.com/v1/title/${title_id}/details/?apiKey=${APIKey}&append_to_response=sources`;
-
-    fetch(URL)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
 }
