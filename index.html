@@ -4,27 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <title>Document</title>
     <script src="script.js"></script>
 </head>
 <body>
-    <div id="name-form" style="visibility: visible;">
-        <div>
-            <p>Welcome to our movie giphy generator!</p>
-            <label for="name">What is your name?</label>
-            <input type="text" name="name" id="name-input" placeholder="enter name" value="kelly">
-            <button id="submit-btn-name">Load from localstorage</button>
+    <section class="hero is-fullheight">
+        <div class="hero-body has-text-centered">
+            <div class="container">
+                <div id="name-form" class="" style="display: ;">
+                    <div>
+                        <div><p class="subtitle">Welcome to our movie giphy generator!</p></div>
+                        <div style="display: inline-block;"><label class="label" for="name">What is your name?</label></div>
+                        <div style="display: inline-block;" class="column is-3"><input id="name-input" class="input is-normal" type="text" name="name" placeholder="enter name" value="Kelly"></div>
+                        <button id="submit-btn-name" class="button is-link is-light">Load from localstorage</button>
+                    </div>
+                    <div>
+                        <div style="display: inline-block;"><label class="label" for="title">Enter the title of a movie or tv show.</label></div>
+                        <div style="display: inline-block;" class="column is-3"><input id="title-input" class="input is-normal" type="text" name="title" placeholder="enter title" value="Avengers"></div>
+                        <button id="submit-btn-title" class="button is-link is-light">Search</button>
+                    </div>
+                </div>
+                <div id="title-form"  style="display: none;">
+                    <div><button id="home-btn">Home</button></div>
+                    <div>&nbsp;</div>
+                    <div id="titles-list" class="columns is-centered"></div>
+                    <div id="images-list"></div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="title">Enter the title of a movie or tv show.</label>
-            <input type="text" name="title" id="title-input" placeholder="enter title" value="Avengers">
-            <button id="submit-btn-title">Search</button>
-        </div>
-    </div>
-    <div id="title-form" style="visibility: visible;">
-        <button id="home-btn">Home</button>
-        <ul id="titles-list"></ul>
-        <div id="images-list"></div>
-    </div>
+    </section>
 </body>
 </html>

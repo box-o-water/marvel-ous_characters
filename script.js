@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     nameBtn.addEventListener("click", function(event) {
         if (nameInput.value.substring(0, 3) == "---") {
             localStorage.clear();
+            nameInput.value = "";
         } else if (nameInput.value.substring(0, 2) == "--") {
             localStorage.removeItem(nameInput.value.substring(2));
             nameInput.value = "";
@@ -144,11 +145,18 @@ function getTitles(title) {
             for (var i = 0; i < 5; i++) {
                 if (!document.getElementById(data.title_results[i].imdb_id)) {
                     console.log("appendChild");
+                    var titleDIV = document.createElement("div");
                     var titleBtnHere = document.createElement("button");
+
+                    titleDIV.setAttribute("class", "column is-narrow");
+                    titlesList.appendChild(titleDIV);
+
                     titleBtnHere.textContent = data.title_results[i].name;
                     titleBtnHere.id = data.title_results[i].imdb_id;
                     titleBtnHere.setAttribute("class", "titleBtn");
-                    titlesList.appendChild(titleBtnHere);
+                    titleBtnHere.setAttribute("style", "height:100px;width:120px;");
+
+                    titleDIV.appendChild(titleBtnHere);
                 }
             }
         })
