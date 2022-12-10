@@ -7,6 +7,7 @@ var titleInput = null;
 var titleBtn = null;
 var titlesList = null;
 var imagesList = null;
+var txtLocalStorage = "";
 
 document.addEventListener("DOMContentLoaded", function(event) {
     
@@ -16,17 +17,41 @@ document.addEventListener("DOMContentLoaded", function(event) {
     titleBtn = document.getElementById("submit-btn-title");
     titlesList = document.getElementById("titles-list");
     imagesList = document.getElementById("images-list");
-
+    console.log("---localStorage----");
+    console.log(allStorage());
     init();
+
     titleBtn.addEventListener("click", function(event) {
-        event.preventDefault();
+        //event.preventDefault();
         console.log("title submitted");
-    
+        
         var title = titleInput.value.trim();
+        
         getTitles(title);
+
+        txtLocalStorage = `{"nameInput" : "${nameInput.value}", "titleInput" : "${titleInput.value}"}`;
+        localStorage.setItem(nameInput.value, txtLocalStorage);
+
     });
     
     nameBtn.addEventListener("click", function(event) {
+
+        if (nameInput.value.substring(0, 3) == "---") {
+            localStorage.clear();
+        } else if (nameInput.value.substring(0, 2) == "--") {
+            localStorage.removeItem(nameInput.value.substring(2));
+            nameInput.value = "";
+        } else {
+            txtLocalStorage = localStorage.getItem(nameInput.value.trim());
+            var jsonLocalStorage = JSON.parse(txtLocalStorage);
+            console.log(jsonLocalStorage.titleInput);
+            titleInput.value = jsonLocalStorage.titleInput;
+            emptyTitlseList();
+            getTitles(titleInput.value);
+
+        }
+
+        /*
         event.preventDefault();
         console.log("name submitted");
     
@@ -34,7 +59,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
         nameInput.value = "";
         console.log(name);
-        localStorage.setItem("name", JSON.stringify(name));    
+        localStorage.setItem("name", JSON.stringify(name));
+        */
     });
 
     titlesList.addEventListener('click', function (e) {
@@ -62,33 +88,41 @@ function renderName() {
 
 }
 
+function emptyTitlseList() {
+    var child = titlesList.lastElementChild; 
+    while (child) {
+        titlesList.removeChild(child);
+        child = titlesList.lastElementChild;
+    }
+}
 function getTitles(title) {
     console.log("getTitles: " + title);
-
-    renderName();
-
     var requestURL = `https://api.watchmode.com/v1/search/?apiKey=${watchmode_api_key}&search_field=name&search_value=${title}`
-  
+    
     fetch(requestURL)
         .then(function (response) {
             return response.json();
         })
         .then(function (data) {
             console.log(data)
+                
             var numOfTitles = data.title_results.length;
             if (numOfTitles > 5) numOfTitles === 5;
             for (var i = 0; i < 5; i++) {
-                var titleBtnHere = document.createElement("button");
-                titleBtnHere.textContent = data.title_results[i].name;
-                titleBtnHere.id = data.title_results[i].imdb_id;
-                titleBtnHere.setAttribute("class", "titleBtn");
-                titlesList.appendChild(titleBtnHere);
+                if (!document.getElementById(data.title_results[i].imdb_id)) {
+                    console.log("appendChild");
+                    var titleBtnHere = document.createElement("button");
+                    titleBtnHere.textContent = data.title_results[i].name;
+                    titleBtnHere.id = data.title_results[i].imdb_id;
+                    titleBtnHere.setAttribute("class", "titleBtn");
+                    titlesList.appendChild(titleBtnHere);
+                }
             }
         })
         .catch(function (error){
             console.log(error)
-        })
-};
+        });
+}
 
 function getGiphy(selectedTitle, imdb_id) {
     console.log("getGiphy: " + selectedTitle + ", " + imdb_id);
@@ -114,7 +148,7 @@ function getGiphy(selectedTitle, imdb_id) {
         })
         .catch(function (error){
             console.log("getGiphy error!");
-            console.log(error)
+            console.log(error);
         })
 };
 
@@ -143,3 +177,14 @@ function init() {
     console.log("initialize application");
 }
 
+function allStorage() {
+    var values = [],
+        keys = Object.keys(localStorage),
+        i = keys.length;
+
+    while ( i-- ) {
+        values.push( localStorage.getItem(keys[i]) );
+    }
+
+    return values;
+}
