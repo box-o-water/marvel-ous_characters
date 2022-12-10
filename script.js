@@ -1,25 +1,62 @@
+const watchmode_api_key = "WImwIw6CGs2o5Lsg9Io6YkEV9ip0oEMA5c3g0dJ8";
+const giphy_api_key = "TEO60zBkEeYuD3lQieCc6BMsBxbxmiwU";
+
+/*
 var nameInput = document.getElementById("name-input");
 var nameBtn = document.getElementById("submit-btn-name");
 var titleInput = document.getElementById("title-input");
 var titleBtn = document.getElementById("submit-btn-title");
 var titlesList = document.getElementById("titles-list");
+*/
 
-const watchmode_api_key = "WImwIw6CGs2o5Lsg9Io6YkEV9ip0oEMA5c3g0dJ8";
-const giphy_api_key = "TEO60zBkEeYuD3lQieCc6BMsBxbxmiwU";
+var nameInput = null;
+var nameBtn = null;
+var titleInput = null;
+var titleBtn = null;
+var titlesList = null;
 
-nameBtn.addEventListener("click", function(event) {
-    event.preventDefault();
-    console.log("name submitted");
+document.addEventListener("DOMContentLoaded", function(event) {
+    
+    nameInput = document.getElementById("name-input");
+    nameBtn = document.getElementById("submit-btn-name");
+    titleInput = document.getElementById("title-input");
+    titleBtn = document.getElementById("submit-btn-title");
+    titlesList = document.getElementById("titles-list");
 
-    var name = nameInput.value.trim();
+    init();
+    titleBtn.addEventListener("click", function(event) {
+        event.preventDefault();
+        console.log("title submitted");
+    
+        var title = titleInput.value.trim();
+        getTitles(title)
+    
+    });
+    
+    nameBtn.addEventListener("click", function(event) {
+        event.preventDefault();
+        console.log("name submitted");
+    
+        var name = nameInput.value.trim();
+    
+        nameInput.value = "";
+    
+        console.log(name);
+    
+        localStorage.setItem("name", JSON.stringify(name));
+    
+    });
 
-    nameInput.value = "";
-
-    console.log(name);
-
-    localStorage.setItem("name", JSON.stringify(name));
-
+    titlesList.addEventListener('click', function (e) {
+        var title = titleInput.value.trim();
+        getTitles(title)
+        if (e.target.classList.contains('titleBtn')) {
+            selectedTitle = e.target.innerHTML
+            getGiphy(selectedTitle)
+        }
+    });
 });
+
 
 function renderName() {
     console.log("rendering name");
@@ -38,15 +75,6 @@ function renderName() {
     }
 
 }
-
-titleBtn.addEventListener("click", function(event) {
-    event.preventDefault();
-    console.log("title submitted");
-
-    var title = titleInput.value.trim();
-    getTitles(title)
-
-});
 
 function getTitles(title) {
     console.log("getTitles")
@@ -75,15 +103,6 @@ function getTitles(title) {
         })
 };
 
-titlesList.addEventListener('click', function (e) {
-    var title = titleInput.value.trim();
-  getTitles(title)
-    if (e.target.classList.contains('titleBtn')) {
-      selectedTitle = e.target.innerHTML
-      getGiphy(selectedTitle)
-    }
-  });
-
 function getGiphy(selectedTitle) {
     console.log("getTitles")
 
@@ -108,4 +127,3 @@ function init() {
     console.log("initialize application");
 }
 
-init()
