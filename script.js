@@ -14,6 +14,7 @@ var nameBtn = null;
 var titleInput = null;
 var titleBtn = null;
 var titlesList = null;
+var imagesList = null;
 
 document.addEventListener("DOMContentLoaded", function(event) {
     
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     titleInput = document.getElementById("title-input");
     titleBtn = document.getElementById("submit-btn-title");
     titlesList = document.getElementById("titles-list");
+    imagesList = document.getElementById("images-list");
 
     init();
     titleBtn.addEventListener("click", function(event) {
@@ -29,8 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         console.log("title submitted");
     
         var title = titleInput.value.trim();
-        getTitles(title)
-    
+        getTitles(title);
     });
     
     nameBtn.addEventListener("click", function(event) {
@@ -40,37 +41,30 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var name = nameInput.value.trim();
     
         nameInput.value = "";
-    
         console.log(name);
-    
-        localStorage.setItem("name", JSON.stringify(name));
-    
+        localStorage.setItem("name", JSON.stringify(name));    
     });
 
     titlesList.addEventListener('click', function (e) {
         var title = titleInput.value.trim();
-        getTitles(title)
         if (e.target.classList.contains('titleBtn')) {
-            selectedTitle = e.target.innerHTML
-            getGiphy(selectedTitle)
+            selectedTitle = e.target.innerHTML;
+
+            //getGiphy(selectedTitle);
+            getGiphy(e.target.innerHTML, e.target.imdb_id);
         }
     });
 });
-
 
 function renderName() {
     console.log("rendering name");
 
     var storedName = JSON.parse(localStorage.getItem("name"));
-
     console.log(storedName);
 
     if (storedName !== null) {
-
         var nameOutput = document.createElement("h2");
-
         nameOutput.textContent = storedName + ", pick a title."
-
         titlesList.appendChild(nameOutput);
     }
 
@@ -94,7 +88,8 @@ function getTitles(title) {
             for (var i = 0; i < 5; i++) {
                 var titleBtnHere = document.createElement("button");
                 titleBtnHere.textContent = data.title_results[i].name;
-                titleBtnHere.setAttribute("class", "titleBtn")
+                titleBtnHere.id = data.title_results[i].imdb_id;
+                titleBtnHere.setAttribute("class", "titleBtn");
                 titlesList.appendChild(titleBtnHere);
             }
         })
@@ -103,7 +98,30 @@ function getTitles(title) {
         })
 };
 
-function getGiphy(selectedTitle) {
+function getGiphy(selectedTitle, imdb_id) {
+    console.log("getTitles")
+
+    var requestURL = `https://api.giphy.com/v1/gifs/search?api_key=${giphy_api_key}&q=${selectedTitle}&limit=1`;
+  
+    fetch(requestURL)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data)
+            if (!document.getElementById("img_" + imdb_id)) {
+                var imgHere = document.createElement("img");
+                imgHere.setAttribute("src", data.data[0].source)
+                imagesList.appendChild(imgHere);
+                imgHere.id = "img_" + imdb_id;
+            }
+        })
+        .catch(function (error){
+            console.log(error)
+        })
+};
+
+function getGiphy_backup(selectedTitle) {
     console.log("getTitles")
 
     var requestURL = `https://api.giphy.com/v1/gifs/search?api_key=${giphy_api_key}&q=${selectedTitle}&limit=1`;
@@ -116,7 +134,8 @@ function getGiphy(selectedTitle) {
             console.log(data)
             var imgHere = document.createElement("img");
             imgHere.setAttribute("src", data.data[0].source)
-            titlesList.appendChild(imgHere);
+            imagesList.appendChild(imgHere);
+            //imgHere.id =
         })
         .catch(function (error){
             console.log(error)
