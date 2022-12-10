@@ -8,25 +8,23 @@
     <script src="script.js"></script>
 </head>
 <body>
-    <p>Welcome to our movie giphy generator!</p>
-    <!-- form class="" id="enter-name" -->
-    <div>
-        <label for="name">What is your name?</label>
-        <input type="text" name="name" id="name-input" placeholder="enter name" value="kelly">
-        <button id="submit-btn-name">Load from localstorage</button>
+    <div id="name-form" style="visibility: visible;">
+        <div>
+            <p>Welcome to our movie giphy generator!</p>
+            <label for="name">What is your name?</label>
+            <input type="text" name="name" id="name-input" placeholder="enter name" value="kelly">
+            <button id="submit-btn-name">Load from localstorage</button>
+        </div>
+        <div>
+            <label for="title">Enter the title of a movie or tv show.</label>
+            <input type="text" name="title" id="title-input" placeholder="enter title" value="Avengers">
+            <button id="submit-btn-title">Search</button>
+        </div>
     </div>
-    <!-- /form -->
-    <!-- form class="" id="enter-title" -->
-<div>
-        <label for="title">Enter the title of a movie or tv show.</label>
-        <input type="text" name="title" id="title-input" placeholder="enter title" value="Avengers">
-        <button id="submit-btn-title">Search</button>
-</div>
-    <!-- /form -->
-    <ul id="titles-list"></ul>
-    <div id="images-list"></div>
+    <div id="title-form" style="visibility: visible;">
+        <button id="home-btn">Home</button>
+        <ul id="titles-list"></ul>
+        <div id="images-list"></div>
     </div>
-    <!-- <img src="https://media.giphy.com/media/gEYoiDrq2L8R9ddAM9/giphy.gif" alt=""
-    class="giphy"> -->
 </body>
 </html>

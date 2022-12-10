@@ -7,6 +7,9 @@ var titleInput = null;
 var titleBtn = null;
 var titlesList = null;
 var imagesList = null;
+var nameForm = null;
+var titleForm = null;
+var homeBtn = null;
 var txtLocalStorage = "";
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -17,14 +20,42 @@ document.addEventListener("DOMContentLoaded", function(event) {
     titleBtn = document.getElementById("submit-btn-title");
     titlesList = document.getElementById("titles-list");
     imagesList = document.getElementById("images-list");
+
+    nameForm = document.getElementById("name-form");
+    titleForm = document.getElementById("title-form");
+    homeBtn = document.getElementById("home-btn");
+/*
+    nameForm.style.visibility = "visible";
+    titleForm.style.visibility = "hidden";
+*/
+    nameForm.style.display = "";
+    titleForm.style.display = "none";
+
+
     console.log("---localStorage----");
     console.log(allStorage());
     init();
 
+    homeBtn.addEventListener("click", function(event) {
+        /*
+        nameForm.style.visibility = "visible";
+        titleForm.style.visibility = "hidden";
+*/
+        nameForm.style.display = "";
+        titleForm.style.display = "none";
+
+    });
+
     titleBtn.addEventListener("click", function(event) {
         //event.preventDefault();
         console.log("title submitted");
+
+        nameForm.style.display = "none";
+        titleForm.style.display = "";
         
+        emptyTitlseList();
+        emptyImagesList();
+
         var title = titleInput.value.trim();
         
         getTitles(title);
@@ -33,34 +64,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
         localStorage.setItem(nameInput.value, txtLocalStorage);
 
     });
-    
-    nameBtn.addEventListener("click", function(event) {
 
+    nameBtn.addEventListener("click", function(event) {
         if (nameInput.value.substring(0, 3) == "---") {
             localStorage.clear();
         } else if (nameInput.value.substring(0, 2) == "--") {
             localStorage.removeItem(nameInput.value.substring(2));
             nameInput.value = "";
         } else {
+            nameForm.style.display = "none";
+            titleForm.style.display = "";
+        
+            emptyTitlseList();
+            emptyImagesList();
+
             txtLocalStorage = localStorage.getItem(nameInput.value.trim());
             var jsonLocalStorage = JSON.parse(txtLocalStorage);
             console.log(jsonLocalStorage.titleInput);
             titleInput.value = jsonLocalStorage.titleInput;
-            emptyTitlseList();
+            
             getTitles(titleInput.value);
 
         }
 
-        /*
-        event.preventDefault();
-        console.log("name submitted");
-    
-        var name = nameInput.value.trim();
-    
-        nameInput.value = "";
-        console.log(name);
-        localStorage.setItem("name", JSON.stringify(name));
-        */
     });
 
     titlesList.addEventListener('click', function (e) {
@@ -68,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         if (e.target.classList.contains('titleBtn')) {
             selectedTitle = e.target.innerHTML;
             console.log("titlesList event");
-
             getGiphy(e.target.innerHTML, e.target.id);
         }
     });
@@ -93,6 +118,14 @@ function emptyTitlseList() {
     while (child) {
         titlesList.removeChild(child);
         child = titlesList.lastElementChild;
+    }
+}
+
+function emptyImagesList() {
+    var child = imagesList.lastElementChild; 
+    while (child) {
+        imagesList.removeChild(child);
+        child = imagesList.lastElementChild;
     }
 }
 function getTitles(title) {
