@@ -1,14 +1,6 @@
 const watchmode_api_key = "WImwIw6CGs2o5Lsg9Io6YkEV9ip0oEMA5c3g0dJ8";
 const giphy_api_key = "TEO60zBkEeYuD3lQieCc6BMsBxbxmiwU";
 
-/*
-var nameInput = document.getElementById("name-input");
-var nameBtn = document.getElementById("submit-btn-name");
-var titleInput = document.getElementById("title-input");
-var titleBtn = document.getElementById("submit-btn-title");
-var titlesList = document.getElementById("titles-list");
-*/
-
 var nameInput = null;
 var nameBtn = null;
 var titleInput = null;
@@ -49,9 +41,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var title = titleInput.value.trim();
         if (e.target.classList.contains('titleBtn')) {
             selectedTitle = e.target.innerHTML;
+            console.log("titlesList event");
 
-            //getGiphy(selectedTitle);
-            getGiphy(e.target.innerHTML, e.target.imdb_id);
+            getGiphy(e.target.innerHTML, e.target.id);
         }
     });
 });
@@ -71,9 +63,9 @@ function renderName() {
 }
 
 function getTitles(title) {
-    console.log("getTitles")
+    console.log("getTitles: " + title);
 
-    renderName()
+    renderName();
 
     var requestURL = `https://api.watchmode.com/v1/search/?apiKey=${watchmode_api_key}&search_field=name&search_value=${title}`
   
@@ -99,7 +91,7 @@ function getTitles(title) {
 };
 
 function getGiphy(selectedTitle, imdb_id) {
-    console.log("getTitles")
+    console.log("getGiphy: " + selectedTitle + ", " + imdb_id);
 
     var requestURL = `https://api.giphy.com/v1/gifs/search?api_key=${giphy_api_key}&q=${selectedTitle}&limit=1`;
   
@@ -108,15 +100,20 @@ function getGiphy(selectedTitle, imdb_id) {
             return response.json();
         })
         .then(function (data) {
-            console.log(data)
+            console.log("getGiphy data");
+            console.log(data);
+
             if (!document.getElementById("img_" + imdb_id)) {
                 var imgHere = document.createElement("img");
-                imgHere.setAttribute("src", data.data[0].source)
+                console.log("image url: " + data.data[0].source);
+                // imgHere.setAttribute("src", data.data[0].source);
+                imgHere.setAttribute("src", `https://i.giphy.com/media/${data.data[0].id}/giphy.webp`);
                 imagesList.appendChild(imgHere);
                 imgHere.id = "img_" + imdb_id;
             }
         })
         .catch(function (error){
+            console.log("getGiphy error!");
             console.log(error)
         })
 };
